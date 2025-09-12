@@ -1,0 +1,22 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border-radius: 20px;
+}
+.card-body h5 {
+    margin-bottom: 0.5rem;
+}
+h2 {
+    font-weight: bold;
+}
+
+.list-group-item {
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+.list-group-item:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}

@@ -1,0 +1,94 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="text-center mb-4">
+    <h1 class="fw-bold">📝 My To-Do List</h1>
+  </div>
+
+  <!-- Summary Section -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-body d-flex justify-content-around text-center">
+      <div>
+        <h5 class="text-success">✅ Completed</h5>
+        <h3>{{ completed_count }}</h3>
+      </div>
+      <div>
+        <h5 class="text-warning">⏳ Pending</h5>
+        <h3>{{ pending_count }}</h3>
+      </div>
+      <div>
+        <h5 class="text-info">📌 Total</h5>
+        <h3>{{ completed_count|add:pending_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Task Form -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <form method="POST" action="{% url 'add_task' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" name="title" class="form-control" placeholder="Task title" required>
+        </div>
+        <div class="mb-3">
+          <textarea name="description" class="form-control" placeholder="Task description (optional)"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Add Task</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Task List -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      {% if tasks %}
+        <ul class="list-group list-group-flush">
+          {% for task in tasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if task.completed %}list-group-item-success{% endif %}">
+              <div>
+                <h5 class="mb-1 {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                  {{ task.title }}
+                </h5>
+                {% if task.description %}
+                  <p class="mb-1 {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                    {{ task.description }}
+                  </p>
+                {% endif %}
+                <small class="text-muted">Created: {{ task.created_at }}</small>
+              </div>
+              <div class="ms-3">
+                {% if not task.completed %}
+                  <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-success">✔ Complete</a>
+                {% else %}
+                  <span class="badge bg-success">Done</span>
+                {% endif %}
+                <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-warning">✏ Edit</a>
+                <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger">🗑 Delete</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-center text-muted mb-0">✨ No tasks yet. Add one above!</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
